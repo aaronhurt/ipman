@@ -1,0 +1,63 @@
+# ipman
+
+## Summary
+
+IPman is a simple tool to automatically update DNS records (A and AAAA) based on the external local IPv4 and/or IPv6 address of the local machine.  Currently it uses myexternalip.com for the external address lookup and supports writing records to GoDaddy's DNS API.  Both backend providers are modeled as interfaces to allow adding additional backends as needed in the future.
+
+## Installing
+
+Users with a proper Go environment (1.8+ required) ...
+
+```
+go get -u github.com/leprechau/ipman
+```
+
+Developers that wish to take advantage of vendoring and other options ...
+
+```
+git clone https://github.com/leprechau/ipman.git
+cd ipman
+make
+```
+
+## Usage
+
+### Summary
+
+```
+ahurt$ ipman --help
+Usage: ipman [--version] [--help] <command> [<args>]
+
+Available commands are:
+    check     Return current external ip address of local machine.
+    update    Update DNS registry with external ip address of local machine.
+```
+
+### Check Options
+
+| Option | Description |
+|--------|-------------|
+| `-4`   | Get external IPv4 address if available.
+| `-6`   | Get external IPv6 address if available.
+
+### Update Options
+
+| Option    | Description |
+|-----------|-------------|
+| `-4`      | Get external IPv4 address if available.
+| `-6`      | Get external IPv6 address if available.
+| `-key`    | API access key
+| `-secret` | API access secret
+| `-domain` | DNS domain name (default: local domain)
+| `-record` | DNS record name (default: local host)
+| `-ttl`    | DNS record ttl  (default: 600)
+
+### Example
+
+```
+ahurt$ ./ipman update -4 -6 -key=YourAccessKey -secret=YourSuperSecretKey
+2018/01/18 10:12:35 [IPv4] local/remote 67.187.109.252/67.187.109.252
+2018/01/18 10:12:37 [IPv6] local/remote 2601:484:c000:5203:ec4:7aff:feb0:4068/2601:484:c000:5203:ec4:7aff:feb0:4068
+```
+
+If Updates are required, the local address differs from the remote DNS record, the performed update will be printed.
