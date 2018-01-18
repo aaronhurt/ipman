@@ -65,7 +65,7 @@ func (c *Command) setupFlags(args []string) error {
 
 	// attempt to populate secret from environment
 	if c.config.secret == "" {
-		c.config.secret = os.Getenv("IPMAN_SECRET_KEY")
+		c.config.secret = os.Getenv("IPMAN_DNS_SECRET")
 	}
 
 	// init ip backend (currently only one)
