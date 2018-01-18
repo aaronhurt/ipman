@@ -116,7 +116,16 @@ func parseError(resp *http.Response) error {
 			resp.StatusCode, err.Error())
 	}
 
-	// return error
+	// check for fields
+	if len(obj.(*DNSError).Fields) > 0 {
+		// return error with fields
+		return fmt.Errorf("[%d/%s] %s -> %v",
+			resp.StatusCode, obj.(*DNSError).Code,
+			obj.(*DNSError).Message, obj.(*DNSError).Fields)
+	}
+
+	// return error without fields
 	return fmt.Errorf("[%d/%s] %s",
-		resp.StatusCode, obj.(*DNSError).Code, obj.(*DNSError).Message)
+		resp.StatusCode, obj.(*DNSError).Code,
+		obj.(*DNSError).Message)
 }
