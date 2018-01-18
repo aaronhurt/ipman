@@ -1,3 +1,6 @@
+[![Mozilla Public License](https://img.shields.io/badge/license-MPL-blue.svg)](https://www.mozilla.org/MPL)
+[![Go Report Card](https://goreportcard.com/badge/github.com/leprechau/ipman)](https://goreportcard.com/report/github.com/leprechau/ipman)
+
 # ipman
 
 ## Summary
