@@ -33,9 +33,3 @@ func DefaultConfig() (*Config, error) {
 	// return error
 	return config, err
 }
-
-// AccessKey does nothing for this backend
-func (c *Config) AccessKey(key string) {}
-
-// SecretKey does nothing for this backend
-func (c *Config) SecretKey(key string) {}

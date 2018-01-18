@@ -58,6 +58,16 @@ func (c *Command) setupFlags(args []string) error {
 		c.config.v4 = true
 	}
 
+	// attempt to populate key from environment
+	if c.config.key == "" {
+		c.config.key = os.Getenv("IPMAN_DNS_KEY")
+	}
+
+	// attempt to populate secret from environment
+	if c.config.secret == "" {
+		c.config.secret = os.Getenv("IPMAN_SECRET_KEY")
+	}
+
 	// init ip backend (currently only one)
 	if c.ip, err = myexternal.DefaultConfig(); err != nil {
 		return err

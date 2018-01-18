@@ -25,12 +25,6 @@ func (i IFlag) String() string {
 type Backend interface {
 	// Get the host IP address for the given protocol
 	Get(proto IFlag) (string, error)
-
-	// AccessKey provides a method to set an API access key
-	AccessKey(string)
-
-	// SecretKey provides a method to set an API secret key
-	SecretKey(string)
 }
 
 // Default represents the default IP lookup backend
