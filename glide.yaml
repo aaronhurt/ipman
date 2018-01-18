@@ -1,0 +1,5 @@
+package: github.com/leprechau/ipman
+import:
+- package: github.com/hashicorp/go-cleanhttp
+- package: github.com/mitchellh/cli
+- package: github.com/myENA/restclient
