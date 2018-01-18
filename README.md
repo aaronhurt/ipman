@@ -61,3 +61,19 @@ ahurt$ ./ipman update -4 -6 -key=YourAccessKey -secret=YourSuperSecretKey
 ```
 
 The `key` and `secret` flags are optional when using environment variables.  This will keep your keys from potentially showing up in the system process list.  If Updates are required, the local address differs from the remote DNS record, the performed update will be printed.
+
+### Crontab (automatic updates)
+
+To dynamically update your records in near real time you can crontab the utillity using something similar to the below in your local users crontab.
+
+```
+## ipman secrets for godaddy api
+IPMAN_DNS_KEY=YourAccessKey
+IPMAN_DNS_SECRET=YourSuperSecretKey
+
+## check and possibly update dns entries every 30 minutes
+*/30 * * * * /path/to/ipman update -4 -6 >/dev/null 2>&1
+```
+
+Please see the crontab documentation of your local system for more information.
+
