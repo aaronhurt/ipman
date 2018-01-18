@@ -67,10 +67,10 @@ Options:
 
 	-4        Get external IPv4 address if available.
 	-6        Get external IPv6 address if available.
-	-key      DNS API access key
-	-secret   DNS API access secret
-	-domain   DNS domain name (default: local domain)
-	-record   DNS record name (default: local host)
-	-ttl      DNS record ttl  (default: 600)
+	-key      The DNS API access key.
+	-secret   The DNS API access secret.
+	-domain   The DNS domain name.            (default: local domain)
+	-record   The DNS record name.            (default: @)
+	-ttl      The DNS record ttl in seconds.  (default: 600)
 `, c.Self)
 }

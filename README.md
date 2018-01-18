@@ -46,11 +46,11 @@ Available commands are:
 |-----------|-------------|
 | `-4`      | Get external IPv4 address if available.
 | `-6`      | Get external IPv6 address if available.
-| `-key`    | API access key
-| `-secret` | API access secret
-| `-domain` | DNS domain name (default: local domain)
-| `-record` | DNS record name (default: local host)
-| `-ttl`    | DNS record ttl  (default: 600)
+| `-key`    | The DNS API access key.  This may also be specified by setting the `IPMAN_DNS_KEY` environment variable.
+| `-secret` | The DNS API access secret.  This may also be specified by setting the `IPMAN_DNS_SECRET` environment variable.
+| `-domain` | The DNS domain name. This value defaults to the domain portion of the local hostname.
+| `-record` | The DNS record name. This defaults to the domain root alias ("@").
+| `-ttl`    | The DNS record ttl in seconds.  This defaults to 600 seconds (5 minutes).
 
 ### Example
 
