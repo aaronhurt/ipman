@@ -37,20 +37,20 @@ Available commands are:
 
 | Option | Description |
 |--------|-------------|
-| `-4`   | Get external IPv4 address if available.
-| `-6`   | Get external IPv6 address if available.
+| `4`   | Get external IPv4 address if available.
+| `6`   | Get external IPv6 address if available.
 
 ### Update Options
 
 | Option    | Description |
 |-----------|-------------|
-| `-4`      | Get external IPv4 address if available.
-| `-6`      | Get external IPv6 address if available.
-| `-key`    | The DNS API access key.  This may also be specified by setting the `IPMAN_DNS_KEY` environment variable.
-| `-secret` | The DNS API access secret.  This may also be specified by setting the `IPMAN_DNS_SECRET` environment variable.
-| `-domain` | The DNS domain name. This value defaults to the domain portion of the local hostname.
-| `-record` | The DNS record name. This defaults to the domain root alias ("@").
-| `-ttl`    | The DNS record ttl in seconds.  This defaults to 600 seconds (5 minutes).
+| `4`      | Get external IPv4 address if available.
+| `6`      | Get external IPv6 address if available.
+| `key`    | The DNS API access key.  This may also be specified by setting the `IPMAN_DNS_KEY` environment variable.
+| `secret` | The DNS API access secret.  This may also be specified by setting the `IPMAN_DNS_SECRET` environment variable.
+| `domain` | The DNS domain name. This value defaults to the domain portion of the local hostname.
+| `record` | The DNS record name. This defaults to the domain root alias ("@").
+| `ttl`    | The DNS record ttl in seconds.  This defaults to 600 seconds (5 minutes).
 
 ### Example
 
@@ -60,4 +60,4 @@ ahurt$ ./ipman update -4 -6 -key=YourAccessKey -secret=YourSuperSecretKey
 2018/01/18 10:12:37 [IPv6] local/remote 2601:484:c000:5203:ec4:7aff:feb0:4068/2601:484:c000:5203:ec4:7aff:feb0:4068
 ```
 
-If Updates are required, the local address differs from the remote DNS record, the performed update will be printed.
+The `key` and `secret` flags are optional when using environment variables.  This will keep your keys from potentially showing up in the system process list.  If Updates are required, the local address differs from the remote DNS record, the performed update will be printed.
