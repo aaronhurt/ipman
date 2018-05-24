@@ -38,7 +38,7 @@ func (c *Command) setupFlags(args []string) error {
 		"API secret key")
 	cmdFlags.StringVar(&c.config.domain, "domain", "",
 		"Domain name")
-	cmdFlags.StringVar(&c.config.name, "name", "@",
+	cmdFlags.StringVar(&c.config.name, "record", "@",
 		"Record name")
 	cmdFlags.IntVar(&c.config.ttl, "ttl", 600,
 		"TTL value")
