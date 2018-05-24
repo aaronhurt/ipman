@@ -70,7 +70,7 @@ Options:
 	-key      The DNS API access key.
 	-secret   The DNS API access secret.
 	-domain   The DNS domain name.            (default: local domain)
-	-record   The DNS record name.            (default: @)
+	-name     The DNS record name.            (default: @)
 	-ttl      The DNS record ttl in seconds.  (default: 600)
 `, c.Self)
 }
