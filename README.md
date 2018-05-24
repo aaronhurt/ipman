@@ -52,7 +52,7 @@ Available commands are:
 | `key`    | The DNS API access key.  This may also be specified by setting the `IPMAN_DNS_KEY` environment variable.
 | `secret` | The DNS API access secret.  This may also be specified by setting the `IPMAN_DNS_SECRET` environment variable.
 | `domain` | The DNS domain name. This value defaults to the domain portion of the local hostname.
-| `record` | The DNS record name. This defaults to the domain root alias ("@").
+| `name`   | The DNS record name. This defaults to the domain root alias ("@").
 | `ttl`    | The DNS record ttl in seconds.  This defaults to 600 seconds (5 minutes).
 
 ### Example
