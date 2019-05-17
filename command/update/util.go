@@ -10,7 +10,7 @@ import (
 
 	// provider backends
 	"github.com/leprechau/ipman/common/dns/godaddy"
-	"github.com/leprechau/ipman/common/ip/myexternal"
+	"github.com/leprechau/ipman/common/ip/ipify"
 )
 
 // setupFlags initializes the instance configuration
@@ -69,7 +69,7 @@ func (c *Command) setupFlags(args []string) error {
 	}
 
 	// init ip backend (currently only one)
-	if c.ip, err = myexternal.DefaultConfig(); err != nil {
+	if c.ip, err = ipify.DefaultConfig(); err != nil {
 		return err
 	}
 

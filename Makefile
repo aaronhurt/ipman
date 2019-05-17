@@ -1,10 +1,22 @@
-.PHONY: build release check clean distclean
+SUDO ?=
+RELEASE_VERSION = $(shell grep RELEASE_VERSION= build/build.sh | grep -oE '[0-9]+?\.[0-9]+?')
+
+ifeq ($(SUDO),true)
+	sudo = sudo
+endif
+
+.PHONY: build test release check clean distclean docker docker-release
+
+export GO111MODULE = on
 
 build:
-	@build/build.sh -i
+	@build/build.sh
+
+test:
+	@go test -v
 
 release:
-	@build/build.sh -ir
+	@build/build.sh -r
 
 check:
 	@build/codeCheck.sh

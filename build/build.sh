@@ -7,21 +7,11 @@ RELEASE_BUILD=0
 
 ## simple usage example
 showUsage() {
-	printf "Usage: $0 [-u|-i|-d]
-	-u    Update vendor directory from glide.yaml using 'glide up' and build
-	-i    Install vendor directory from glide.lock using 'glide install' and build
-	-d    Remove existing glide.lock and vendor directory and exit
+	printf "Usage: $0 [-d|-c|-r]
+	-d    Remove binary and vendor directory
+	-c    Clean distribution files
 	-r    Build and package release binaries\n\n"
 	exit 0
-}
-
-## install glide if needed
-ensureGlide() {
-	which glide > /dev/null 2>&1
-	if [ $? -ne 0 ]; then
-		printf "Installing glide ... "
-		go get github.com/Masterminds/glide
-	fi
 }
 
 ## install gox if needed
@@ -33,25 +23,18 @@ ensureGox() {
 	fi
 }
 
+## we require module support
+export GO111MODULE=on
+
 ## exit toggle
 should_exit=false
 
 ## read options
-while getopts ":uidcr" opt; do
+while getopts ":dcr" opt; do
 	case $opt in
-		u)
-			ensureGlide
-			printf "Updating vendor directory ... "
-			glide -q up > /dev/null 2>&1
-		;;
-		i)
-			ensureGlide
-			printf "Installing from glide.lock ... "
-			glide -q install > /dev/null 2>&1
-		;;
 		d)
-			printf "Removing binary, glide.lock and vendor directory ... "
-			rm -rf "${BUILD_NAME}" glide.lock vendor
+			printf "Removing binary and vendor directory ... "
+			rm -rf "${BUILD_NAME}" vendor
 			printf "done.\n"
 			should_exit=true
 		;;
@@ -84,9 +67,6 @@ if [ $RELEASE_BUILD -eq 1 ]; then
 	## clean dist directory
 	rm -rf ./dist/
 
-	## build release
-	printf "Building release ... "
-
 	## call gox to build our binaries
 	CGO_ENABLED=0 gox \
 	-osarch="linux/amd64 darwin/amd64 freebsd/amd64 openbsd/amd64 windows/amd64 windows/386" \
@@ -98,9 +78,6 @@ if [ $RELEASE_BUILD -eq 1 ]; then
 	RETVAL=$?
 
 else
-
-	## build binaries
-	printf "Building ... "
 
 	## build it
 	CGO_ENABLED=0 go build -o "${BUILD_NAME}" \

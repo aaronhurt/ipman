@@ -1,4 +1,4 @@
-package myexternal
+package ipify
 
 import (
 	// core
@@ -10,7 +10,7 @@ import (
 	"github.com/leprechau/ipman/common/ip"
 )
 
-// Get external IP address via myexternalip.com
+// Get looks up client address via ipify
 func (c *Config) Get(proto ip.IFlag) (string, error) {
 	var ctx = context.Background()
 	var response = new(Response)
@@ -30,7 +30,7 @@ func (c *Config) Get(proto ip.IFlag) (string, error) {
 	}
 
 	// execute the client call
-	if err = c.client.Get(ctx, url, "/json", nil, response); err != nil {
+	if err = c.client.Get(ctx, url, "/?format=json", nil, response); err != nil {
 		return "", err
 	}
 

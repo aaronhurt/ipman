@@ -5,7 +5,10 @@
 
 ## Summary
 
-IPman is a simple tool to automatically update DNS records (A and AAAA) based on the external local IPv4 and/or IPv6 address of the local machine.  Currently it uses myexternalip.com for the external address lookup and supports writing records to GoDaddy's DNS API.  Both backend providers are modeled as interfaces to allow adding additional backends as needed in the future.
+IPman is a simple tool to automatically update DNS records (A and AAAA) based on the external local IPv4 and/or IPv6
+address of the local machine.  Currently it uses ipify.com for the external address lookup and supports writing
+records to GoDaddy's DNS API.  Both backend providers are modeled as interfaces to allow adding additional backends as
+needed in the future.
 
 ## Installing
 
@@ -49,8 +52,8 @@ Available commands are:
 |-----------|-------------|
 | `4`      | Get external IPv4 address if available.
 | `6`      | Get external IPv6 address if available.
-| `key`    | The DNS API access key.  This may also be specified by setting the `IPMAN_DNS_KEY` environment variable.
-| `secret` | The DNS API access secret.  This may also be specified by setting the `IPMAN_DNS_SECRET` environment variable.
+| `key`    | The DNS API access key.  May also be set via the `IPMAN_DNS_KEY` environment variable.
+| `secret` | The DNS API access secret.  May also be set by via the `IPMAN_DNS_SECRET` environment variable.
 | `domain` | The DNS domain name. This value defaults to the domain portion of the local hostname.
 | `name`   | The DNS record name. This defaults to the domain root alias ("@").
 | `ttl`    | The DNS record ttl in seconds.  This defaults to 600 seconds (5 minutes).
@@ -63,11 +66,14 @@ ahurt$ ./ipman update -4 -6 -key=YourAccessKey -secret=YourSuperSecretKey
 2018/01/18 10:12:37 [IPv6] local/remote 2601:484:c000:5203:ec4:7aff:feb0:4068/2601:484:c000:5203:ec4:7aff:feb0:4068
 ```
 
-The `key` and `secret` flags are optional when using environment variables.  This will keep your keys from potentially showing up in the system process list.  If Updates are required, the local address differs from the remote DNS record, the performed update will be printed.
+The `key` and `secret` flags are optional when using environment variables.  This will keep your keys from potentially
+showing up in the system process list.  If Updates are required, the local address differs from the remote DNS record,
+the performed update will be printed.
 
 ### Crontab (automatic updates)
 
-To dynamically update your records in near real time you can crontab the utillity using something similar to the below in your local users crontab.
+To dynamically update your records in near real time you can crontab the utillity using something similar to the below
+in your local users crontab.
 
 ```
 ## ipman secrets for godaddy api

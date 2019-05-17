@@ -1,4 +1,4 @@
-package myexternal
+package ipify
 
 import (
 	// ENA's simple restclient
@@ -18,17 +18,12 @@ func DefaultConfig() (*Config, error) {
 	var err error
 
 	config = &Config{
-		v4URL: "https://ipv4.myexternalip.com",
-		v6URL: "https://ipv6.myexternalip.com", // has invalid cert :/
+		v4URL: "https://api.ipify.org",
+		v6URL: "https://api6.ipify.org",
 	}
 
 	// init global client
-	config.client, err = restclient.NewClient(
-		&restclient.ClientConfig{
-			InsecureSkipVerify: true, // ipv6.myexternalip.com
-		},
-		nil,
-	)
+	config.client, err = restclient.NewClient(&restclient.ClientConfig{}, nil)
 
 	// return error
 	return config, err
