@@ -38,6 +38,11 @@ func (c *Config) Get(domain, name string, typ dns.RType) (string, error) {
 		return "", err
 	}
 
+	// check for empty response - no upstream records
+	if len(response) < 1 {
+		return "", nil
+	}
+
 	// return the payload
 	return strings.ToLower(response[0].Data), nil
 }
