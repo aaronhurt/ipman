@@ -5,11 +5,8 @@ import (
 	"fmt"
 	"os"
 
-	// common errors
-	ce "github.com/leprechau/ipman/common/errors"
-
-	// provider backends
-	"github.com/leprechau/ipman/common/ip/ipify"
+	// common resources shared between commands
+	"github.com/leprechau/ipman/common"
 )
 
 // setupFlags initializes the instance configuration
@@ -31,6 +28,8 @@ func (c *Command) setupFlags(args []string) error {
 		"Check IPv4")
 	cmdFlags.BoolVar(&c.config.v6, "6", false,
 		"Check IPv6")
+	cmdFlags.StringVar(&c.config.ipbe, "ipbe", "ipify",
+		"IP lookup backend")
 
 	// parse flags and ignore error
 	if err = cmdFlags.Parse(args); err != nil {
@@ -39,7 +38,7 @@ func (c *Command) setupFlags(args []string) error {
 
 	// check for remaining garbage
 	if cmdFlags.NArg() > 0 {
-		return ce.ErrUnknownArg
+		return common.ErrUnknownArg
 	}
 
 	// default to v4 if not specified
@@ -47,11 +46,11 @@ func (c *Command) setupFlags(args []string) error {
 		c.config.v4 = true
 	}
 
-	// init ip backend (currently only one)
-	if c.ip, err = ipify.DefaultConfig(); err != nil {
+	// init ip backend
+	if c.ip, err = common.GetIPBackend(c.config.ipbe); err != nil {
 		return err
 	}
 
-	// always okay
+	// all okay
 	return nil
 }

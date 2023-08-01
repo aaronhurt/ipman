@@ -1,7 +1,6 @@
 package check
 
 import (
-	// core
 	"fmt"
 	stdLog "log"
 
@@ -11,11 +10,12 @@ import (
 
 // command configuration
 type config struct {
-	v4 bool
-	v6 bool
+	v4   bool
+	v6   bool
+	ipbe string
 }
 
-// Command is a Command implementation that runs the backup operation
+// Command is a Command implementation for the check operation
 type Command struct {
 	Self   string
 	Log    *stdLog.Logger
@@ -59,5 +59,6 @@ Options:
 
 	-4        Get external IPv4 address if available.
 	-6        Get external IPv6 address if available.
+	-ipbe     IP lookup backend (local or ipify).        (default: ipify)
 `, c.Self)
 }

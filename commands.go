@@ -4,9 +4,11 @@ import (
 	stdLog "log"
 	"os"
 
+	"github.com/mitchellh/cli"
+
+	// command implementations
 	"github.com/leprechau/ipman/command/check"
 	"github.com/leprechau/ipman/command/update"
-	"github.com/mitchellh/cli"
 )
 
 // package global logger

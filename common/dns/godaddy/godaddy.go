@@ -1,7 +1,6 @@
 package godaddy
 
 import (
-	// core
 	"context"
 	"encoding/json"
 	"fmt"
@@ -17,12 +16,12 @@ import (
 func (c *Config) Get(domain, name string, typ dns.RType) (string, error) {
 	var ctx = context.Background()
 	var response = make(DNSRecords, 0)
-	var url *url.URL
+	var u *url.URL
 	var path string
 	var err error
 
 	// parse url and check error
-	if url, err = url.Parse(c.defaultURL); err != nil {
+	if u, err = url.Parse(c.defaultURL); err != nil {
 		return "", err
 	}
 
@@ -34,7 +33,7 @@ func (c *Config) Get(domain, name string, typ dns.RType) (string, error) {
 	c.setAuthorizationHeader()
 
 	// execute client call
-	if err = c.client.Get(ctx, url, path, nil, &response); err != nil {
+	if err = c.client.Get(ctx, u, path, nil, &response); err != nil {
 		return "", err
 	}
 
@@ -51,12 +50,12 @@ func (c *Config) Get(domain, name string, typ dns.RType) (string, error) {
 func (c *Config) Upsert(domain, name, data string, typ dns.RType) error {
 	var ctx = context.Background()
 	var request = make(DNSRecords, 1)
-	var url *url.URL
+	var u *url.URL
 	var path string
 	var err error
 
 	// parse url and check error
-	if url, err = url.Parse(c.defaultURL); err != nil {
+	if u, err = url.Parse(c.defaultURL); err != nil {
 		return err
 	}
 
@@ -73,7 +72,7 @@ func (c *Config) Upsert(domain, name, data string, typ dns.RType) error {
 	c.setAuthorizationHeader()
 
 	// execute client call and return
-	return c.client.Put(ctx, url, path, nil, request, nil)
+	return c.client.Put(ctx, u, path, nil, request, nil)
 }
 
 // DefaultDomainName returns the default domain name

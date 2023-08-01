@@ -1,7 +1,6 @@
 package ipify
 
 import (
-	// ENA's simple restclient
 	"github.com/myENA/restclient"
 )
 

@@ -26,6 +26,3 @@ type Backend interface {
 	// Get the host IP address for the given protocol
 	Get(proto IFlag) (string, error)
 }
-
-// Default represents the default IP lookup backend
-var Default Backend

@@ -1,14 +1,13 @@
 package check
 
 import (
-	// core
 	"fmt"
 
 	// backend definition
 	"github.com/leprechau/ipman/common/ip"
 )
 
-// checkIP
+// checkIP retrieves the local machine IP via the specified lookup backend
 func (c *Command) checkIP() error {
 	var ips string
 	var err error

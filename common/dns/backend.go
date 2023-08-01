@@ -37,6 +37,3 @@ type Backend interface {
 	// SecretKey provides a method to set an API secret key
 	SecretKey(string)
 }
-
-// Default represents the default DNS registry backend
-var Default Backend

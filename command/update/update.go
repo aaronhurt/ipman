@@ -6,7 +6,7 @@ import (
 	"github.com/leprechau/ipman/common/ip"
 )
 
-// updateIP performs and up check and update
+// updateIP is a wrapper around the checkUpdate function
 func (c *Command) updateIP() error {
 	var err error
 
@@ -28,6 +28,7 @@ func (c *Command) updateIP() error {
 	return nil
 }
 
+// checkUpdate checks the local machine IP and triggers a DNS update if needed
 func (c *Command) checkUpdate(iType ip.IFlag, rType dns.RType) error {
 	var local string
 	var remote string

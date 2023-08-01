@@ -5,12 +5,8 @@ import (
 	"fmt"
 	"os"
 
-	// errors package
-	ce "github.com/leprechau/ipman/common/errors"
-
-	// provider backends
-	"github.com/leprechau/ipman/common/dns/godaddy"
-	"github.com/leprechau/ipman/common/ip/ipify"
+	// common resources shared between commands
+	"github.com/leprechau/ipman/common"
 )
 
 // setupFlags initializes the instance configuration
@@ -42,6 +38,10 @@ func (c *Command) setupFlags(args []string) error {
 		"Record name")
 	cmdFlags.IntVar(&c.config.ttl, "ttl", 600,
 		"TTL value")
+	cmdFlags.StringVar(&c.config.ipbe, "ipbe", "ipify",
+		"IP lookup backend")
+	cmdFlags.StringVar(&c.config.dnsbe, "dnsbe", "godaddy",
+		"DNS update backend")
 
 	// parse flags and ignore error
 	if err = cmdFlags.Parse(args); err != nil {
@@ -50,7 +50,7 @@ func (c *Command) setupFlags(args []string) error {
 
 	// check for remaining garbage
 	if cmdFlags.NArg() > 0 {
-		return ce.ErrUnknownArg
+		return common.ErrUnknownArg
 	}
 
 	// default to v4 if not specified
@@ -68,13 +68,13 @@ func (c *Command) setupFlags(args []string) error {
 		c.config.secret = os.Getenv("IPMAN_DNS_SECRET")
 	}
 
-	// init ip backend (currently only one)
-	if c.ip, err = ipify.DefaultConfig(); err != nil {
+	// init ip backend
+	if c.ip, err = common.GetIPBackend(c.config.ipbe); err != nil {
 		return err
 	}
 
-	// init dns backend (currently only one)
-	if c.dns, err = godaddy.DefaultConfig(); err != nil {
+	// init dns backend
+	if c.dns, err = common.GetDNSBackend(c.config.dnsbe); err != nil {
 		return err
 	}
 

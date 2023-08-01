@@ -1,18 +1,12 @@
 package godaddy
 
 import (
-	// core
 	"net/http"
 	"os"
 
-	// Hashi's clean http client
 	"github.com/hashicorp/go-cleanhttp"
-
-	// get domain from hostname
-	"golang.org/x/net/publicsuffix"
-
-	// ENA's simple restclient
 	"github.com/myENA/restclient"
+	"golang.org/x/net/publicsuffix"
 )
 
 // Config contains backend configuration

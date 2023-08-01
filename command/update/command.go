@@ -1,7 +1,6 @@
 package update
 
 import (
-	// core
 	"fmt"
 	stdLog "log"
 
@@ -19,9 +18,11 @@ type config struct {
 	domain string
 	name   string
 	ttl    int
+	ipbe   string
+	dnsbe  string
 }
 
-// Command is a Command implementation that runs the backup operation
+// Command is a Command implementation for the update operation
 type Command struct {
 	Self   string
 	Log    *stdLog.Logger
@@ -65,12 +66,14 @@ Usage: %s cmd [options]
 
 Options:
 
-	-4        Get external IPv4 address if available.
-	-6        Get external IPv6 address if available.
+	-4        Update external IPv4 address if available.
+	-6        Update external IPv6 address if available.
 	-key      The DNS API access key.
 	-secret   The DNS API access secret.
-	-domain   The DNS domain name.            (default: local domain)
-	-name     The DNS record name.            (default: @)
-	-ttl      The DNS record ttl in seconds.  (default: 600)
+	-domain   The DNS domain name.                   (default: local domain)
+	-name     The DNS record name.                   (default: @)
+	-ttl      The DNS record ttl in seconds.         (default: 600)
+	-ipbe     IP lookup backend (local or ipify).    (default: ipify)
+	-dnsbe    DNS update backend (godaddy or xxx)    (default: godaddy)
 `, c.Self)
 }
