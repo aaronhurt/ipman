@@ -41,22 +41,26 @@ Available commands are:
 
 ### Check Options
 
-| Option | Description |
-|--------|-------------|
-| `4`   | Get external IPv4 address if available.
-| `6`   | Get external IPv6 address if available.
+| Option | Description                                             |
+|--------|---------------------------------------------------------|
+| `4`    | Get external IPv4 address if available.                 |
+| `6`    | Get external IPv6 address if available.                 |
+| `ipbe` | IP lookup backend (`ipify` or `local`) default: `ipify` |
+
 
 ### Update Options
 
-| Option    | Description |
-|-----------|-------------|
-| `4`      | Get external IPv4 address if available.
-| `6`      | Get external IPv6 address if available.
-| `key`    | The DNS API access key.  May also be set via the `IPMAN_DNS_KEY` environment variable.
-| `secret` | The DNS API access secret.  May also be set by via the `IPMAN_DNS_SECRET` environment variable.
-| `domain` | The DNS domain name. This value defaults to the domain portion of the local hostname.
-| `name`   | The DNS record name. This defaults to the domain root alias ("@").
-| `ttl`    | The DNS record ttl in seconds.  This defaults to 600 seconds (5 minutes).
+| Option   | Description                                                                                     |
+|----------|-------------------------------------------------------------------------------------------------|
+| `4`      | Get external IPv4 address if available.                                                         |
+| `6`      | Get external IPv6 address if available.                                                         |
+| `key`    | The DNS API access key.  May also be set via the `IPMAN_DNS_KEY` environment variable.          |
+| `secret` | The DNS API access secret.  May also be set by via the `IPMAN_DNS_SECRET` environment variable. |
+| `domain` | The DNS domain name. This value defaults to the domain portion of the local hostname.           |
+| `name`   | The DNS record name. This defaults to the domain root alias ("@").                              |
+| `ttl`    | The DNS record ttl in seconds.  This defaults to 600 seconds (5 minutes).                       |
+| `ipbe`   | IP lookup backend (`ipify` or `local`). This defaults to `ipify`.                               |
+| `dnsbe`  | DNS update backend (only `godaddy` currently). This defaults to `godaddy`.                      |
 
 ### Example
 
