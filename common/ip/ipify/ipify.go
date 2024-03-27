@@ -1,3 +1,4 @@
+// Package ipify provides an IP lookup backend via the ipify.org service
 package ipify
 
 import (

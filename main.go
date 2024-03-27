@@ -1,3 +1,4 @@
+// Package main initializes and starts ipman
 package main
 
 import (
@@ -16,12 +17,12 @@ func main() {
 
 	// init and populate cli object
 	c = cli.NewCLI(appName, appVersion)
-	c.Args = os.Args[1:]     // arguments minus command
-	c.Commands = cliCommands // see commands.go
+	c.Args = os.Args[1:]       // arguments minus command
+	c.Commands = initComands() // see commands.go
 
 	// run command and check return
 	if status, err = c.Run(); err != nil {
-		fmt.Fprintf(os.Stderr, "Error executing CLI: %s\n", err)
+		_, _ = fmt.Fprintf(os.Stderr, "Error executing CLI: %s\n", err)
 	}
 
 	// exit

@@ -11,19 +11,13 @@ import (
 	"github.com/leprechau/ipman/command/update"
 )
 
-// package global logger
-var logger *stdLog.Logger
-
-// available commands
-var cliCommands map[string]cli.CommandFactory
+// command logger
+var logger = stdLog.New(os.Stderr, "", stdLog.LstdFlags)
 
 // init command factory
-func init() {
-	// init logger
-	logger = stdLog.New(os.Stderr, "", stdLog.LstdFlags)
-
+func initComands() map[string]cli.CommandFactory {
 	// register sub commands
-	cliCommands = map[string]cli.CommandFactory{
+	return map[string]cli.CommandFactory{
 		"check": func() (cli.Command, error) {
 			return &check.Command{
 				Self: os.Args[0],

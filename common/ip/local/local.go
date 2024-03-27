@@ -1,3 +1,4 @@
+// Package local provides a machine local IP lookup backend
 package local
 
 import (
@@ -25,7 +26,7 @@ func (c *Config) Get(proto ip.IFlag) (string, error) {
 	}
 
 	// close after return
-	defer conn.Close()
+	defer func() { _ = conn.Close() }()
 
 	// get local address from connection object and return
 	return conn.LocalAddr().(*net.UDPAddr).IP.String(), nil

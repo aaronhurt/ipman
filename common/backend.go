@@ -1,3 +1,4 @@
+// Package common contains code shared between packages
 package common
 
 import (

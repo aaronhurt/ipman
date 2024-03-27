@@ -1,3 +1,4 @@
+// Package dns defines the DNS service backend interface
 package dns
 
 // RType represents a dns record type

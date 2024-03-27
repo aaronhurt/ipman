@@ -1,3 +1,4 @@
+// Package godaddy provides a DNS backend via the GoDaddy service
 package godaddy
 
 import (
@@ -105,7 +106,7 @@ func parseError(resp *http.Response) error {
 	var err error
 
 	// close body when done
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	// check response code and set object
 	if resp.StatusCode == http.StatusTooManyRequests {

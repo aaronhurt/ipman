@@ -1,3 +1,4 @@
+// Package ip defines the IP lookup backend interface
 package ip
 
 // IFlag represents an address family inet flag

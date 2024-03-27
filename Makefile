@@ -13,7 +13,7 @@ build:
 	@build/build.sh
 
 test:
-	@go test -v
+	@go test -v ./...
 
 release:
 	@build/build.sh -r

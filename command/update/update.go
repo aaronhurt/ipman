@@ -1,3 +1,4 @@
+// Package update provides the update cli command
 package update
 
 import (
