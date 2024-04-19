@@ -29,13 +29,13 @@ func (c *Command) Run(args []string) int {
 
 	// init flags
 	if err = c.setupFlags(args); err != nil {
-		c.Log.Printf("[Error] Failed to init flags: %s", err.Error())
+		c.Log.Printf("[Error] Failed to init flags: %w", err)
 		return 1
 	}
 
 	// check ip
 	if err = c.checkIP(); err != nil {
-		c.Log.Printf("[Error] Failed to check addresses: %s", err.Error())
+		c.Log.Printf("[Error] Failed to check addresses: %w", err)
 		return 1
 	}
 

@@ -117,8 +117,8 @@ func parseError(resp *http.Response) error {
 
 	// attempt process error body
 	if err = json.NewDecoder(resp.Body).Decode(obj); err != nil {
-		return fmt.Errorf("Unable to process error from %d error response: %s",
-			resp.StatusCode, err.Error())
+		return fmt.Errorf("unable decode %d error response: %w",
+			resp.StatusCode, err)
 	}
 
 	// check for fields

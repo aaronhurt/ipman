@@ -6,7 +6,7 @@
 ## Summary
 
 IPman is a simple tool to automatically update DNS records (A and AAAA) based on the external local IPv4 and/or IPv6
-address of the local machine.  Currently it uses ipify.com for the external address lookup and supports writing
+address of the local machine.  It uses ipify.com for the external address lookup and supports writing
 records to GoDaddy's DNS API.  Both backend providers are modeled as interfaces to allow adding additional backends as
 needed in the future.
 

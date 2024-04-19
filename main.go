@@ -17,8 +17,8 @@ func main() {
 
 	// init and populate cli object
 	c = cli.NewCLI(appName, appVersion)
-	c.Args = os.Args[1:]       // arguments minus command
-	c.Commands = initComands() // see commands.go
+	c.Args = os.Args[1:]        // arguments minus command
+	c.Commands = initCommands() // see commands.go
 
 	// run command and check return
 	if status, err = c.Run(); err != nil {

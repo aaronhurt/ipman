@@ -15,7 +15,7 @@ import (
 var logger = stdLog.New(os.Stderr, "", stdLog.LstdFlags)
 
 // init command factory
-func initComands() map[string]cli.CommandFactory {
+func initCommands() map[string]cli.CommandFactory {
 	// register sub commands
 	return map[string]cli.CommandFactory{
 		"check": func() (cli.Command, error) {

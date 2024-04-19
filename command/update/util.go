@@ -21,7 +21,7 @@ func (c *Command) setupFlags(args []string) error {
 
 	// init flagset
 	cmdFlags = flag.NewFlagSet("update", flag.ContinueOnError)
-	cmdFlags.Usage = func() { fmt.Fprint(os.Stdout, c.Help()); os.Exit(0) }
+	cmdFlags.Usage = func() { _, _ = fmt.Fprint(os.Stdout, c.Help()); os.Exit(0) }
 
 	// declare flags
 	cmdFlags.BoolVar(&c.config.v4, "4", false,
