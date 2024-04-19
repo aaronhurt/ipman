@@ -1,4 +1,4 @@
-name: golangci-lint
+name: pr-checks
 on:
   push:
     branches:
@@ -11,8 +11,8 @@ permissions:
   pull-requests: read
 
 jobs:
-  golangci:
-    name: lint
+  checks:
+    name: run checks
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -20,6 +20,12 @@ jobs:
         with:
           go-version-file: 'go.mod'
           check-latest: true
+      - name: install govulncheck
+        run: go install golang.org/x/vuln/cmd/govulncheck@latest
+        shell: bash
+      - name: run govulncheck
+        run: govulncheck -show verbose ./...
+        shell: bash
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v4
         with:
