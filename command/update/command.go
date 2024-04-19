@@ -37,13 +37,13 @@ func (c *Command) Run(args []string) int {
 
 	// init flags
 	if err = c.setupFlags(args); err != nil {
-		c.Log.Printf("[Error] Failed to init flags: %w", err)
+		c.Log.Printf("[Error] Failed to init flags: %s", err.Error())
 		return 1
 	}
 
 	// attempt to update p
 	if err = c.updateIP(); err != nil {
-		c.Log.Printf("[Error] Failed to update dns record: %w", err)
+		c.Log.Printf("[Error] Failed to update dns record: %s", err.Error())
 		return 1
 	}
 
