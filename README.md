@@ -55,39 +55,42 @@ Available commands are:
 
 ### Update Options
 
-| Option   | Description                                                                                     |
-|----------|-------------------------------------------------------------------------------------------------|
-| `4`      | Get external IPv4 address if available.                                                         |
-| `6`      | Get external IPv6 address if available.                                                         |
-| `key`    | The DNS API access key.  May also be set via the `IPMAN_DNS_KEY` environment variable.          |
-| `secret` | The DNS API access secret.  May also be set by via the `IPMAN_DNS_SECRET` environment variable. |
-| `zone`   | The DNS zone ID or domain name. This is a required parameter.                                   |
-| `name`   | The DNS record name. This defaults to the dns zone apex ("@").                                  |
-| `ttl`    | The DNS record ttl in seconds.  This defaults to 600 seconds (5 minutes).                       |
-| `ipbe`   | IP lookup backend (`ipify` or `local`). This defaults to `ipify`.                               |
-| `dnsbe`  | DNS update backend (`cloudflare` or `godaddy`). This defaults to `cloudflare`.                  |
+| Option   | Description                                                                              |
+|----------|------------------------------------------------------------------------------------------|
+| `4`      | Update external IPv4 address if available.                                               |
+| `6`      | Update external IPv6 address if available.                                               |
+| `key`    | The DNS API access key.  This defaults tp `$IPMAN_DNS_KEY` from the environment.         |
+| `secret` | The DNS API access secret.  This defaults to `$IPMAN_DNS_SECRET` from the environment.   |
+| `zone`   | The DNS zone ID or domain name. This defaults to `$IPMAN_DNS_ZONE` from the environment. |
+| `name`   | The DNS record name. This defaults to the dns zone apex ("@").                           |
+| `ttl`    | The DNS record ttl in seconds.  This defaults to 600 seconds (5 minutes).                |
+| `ipbe`   | IP lookup backend (`ipify` or `local`). This defaults to `ipify`.                        |
+| `dnsbe`  | DNS update backend (`cloudflare` or `godaddy`). This defaults to `cloudflare`.           |
 
 ### Example
 
 ```
-ahurt$ ./ipman update -4 -6 -key=YourAccessKey -secret=YourSuperSecretKey
-2018/01/18 10:12:35 [IPv4] local/remote 67.187.109.252/67.187.109.252
-2018/01/18 10:12:37 [IPv6] local/remote 2601:484:c000:5203:ec4:7aff:feb0:4068/2601:484:c000:5203:ec4:7aff:feb0:4068
+ahurt$ ./ipman update -4 -6 -secret=<CF token or GD secret> -zone=<CF zone ID or GD domain name>
+time=2024-07-12T13:19:49.872-05:00 level=INFO msg="local" iType=IPv4 addr=151.182.28.185
+time=2024-07-12T13:19:50.538-05:00 level=INFO msg="remote" iType=IPv4 addr=151.182.28.180
+time=2024-07-12T13:19:50.628-05:00 level=INFO msg="updated remote" record=anbcs.com rType=AAAA data=151.182.28.185
+time=2024-07-12T13:19:50.731-05:00 level=INFO msg="local" iType=IPv6 addr=2601:1702:22d2:3c60:94c6:6adc:c162:dcd6
+time=2024-07-12T13:19:51.146-05:00 level=INFO msg="remote" iType=IPv6 addr=2601:1702:22d2:3c60:3ecc:effe:fe22:4810
+time=2024-07-12T13:19:51.146-05:00 level=INFO msg="updated remote" record=anbcs.com rType=AAAA data=2601:1702:22d2:3c60:94c6:6adc:c162:dcd6
 ```
 
 The `key` and `secret` flags are optional when using environment variables.  This will keep your keys from potentially
-showing up in the system process list.  If Updates are required, the local address differs from the remote DNS record,
-the performed update will be printed.
+showing up in the system process list.  Updates are only triggered when the local address differs from the remote record.
 
 ### Crontab (automatic updates)
 
-To dynamically update your records in near real time you can crontab the utillity using something similar to the below
+To dynamically update your records in near real time you can crontab the utility using something similar to the below
 in your local users crontab.
 
 ```
-## ipman secrets for godaddy api
-IPMAN_DNS_KEY=YourAccessKey
-IPMAN_DNS_SECRET=YourSuperSecretKey
+## ipman vars for cloudflare
+export IPMAN_DNS_SECRET=<CF API Token>
+export IPMAN_DNS_ZONE=<CF Zone ID>
 
 ## check and possibly update dns entries every 30 minutes
 */30 * * * * /path/to/ipman update -4 -6 >/dev/null 2>&1

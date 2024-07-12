@@ -51,6 +51,5 @@ func (c *Command) setupFlags(args []string) error {
 		return err
 	}
 
-	// all okay
 	return nil
 }

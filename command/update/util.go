@@ -100,6 +100,5 @@ func (c *Command) setupFlags(args []string) error {
 		c.config.ttl = c.dns.RecordTTL()
 	}
 
-	// always okay
 	return nil
 }

@@ -58,6 +58,6 @@ Options:
 
 	-4        Get external IPv4 address if available.
 	-6        Get external IPv6 address if available.
-	-ipbe     IP lookup backend (local or ipify).          (default: ipify)
+	-ipbe     IP lookup backend (ipify or local).          (default: ipify)
 `, c.Self)
 }

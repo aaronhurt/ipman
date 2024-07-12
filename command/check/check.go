@@ -28,6 +28,5 @@ func (c *Command) checkIP() error {
 		fmt.Println(ips)
 	}
 
-	// all okay
 	return nil
 }

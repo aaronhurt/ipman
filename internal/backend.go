@@ -12,7 +12,7 @@ import (
 	"github.com/leprechau/ipman/internal/ip/local"
 )
 
-// GetIPBackend returns an initialized IP lookup backend of the requested type
+// GetIPBackend returns an initialized IP backend of the requested type
 func GetIPBackend(backend string) (ip.Backend, error) {
 	switch backend {
 	case "ipify":
@@ -20,20 +20,16 @@ func GetIPBackend(backend string) (ip.Backend, error) {
 	case "local":
 		return local.DefaultConfig()
 	}
-
-	// if we got here it's a problem
 	return nil, errors.ErrUnknownIPBackend
 }
 
-// GetDNSBackend returns an initialized IP lookup backend of the requested type
+// GetDNSBackend returns an initialized DNS backend of the requested type
 func GetDNSBackend(backend string) (dns.Backend, error) {
 	switch backend {
-	case "godaddy":
-		return godaddy.DefaultConfig()
 	case "cloudflare":
 		return cloudflare.DefaultConfig()
+	case "godaddy":
+		return godaddy.DefaultConfig()
 	}
-
-	// if we got here it's a problem
 	return nil, errors.ErrUnknownDNSBackend
 }

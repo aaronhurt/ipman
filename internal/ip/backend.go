@@ -18,7 +18,6 @@ func (i IFlag) String() string {
 	if i == Inet6 {
 		return "IPv6"
 	}
-	// default
 	return "Unknown"
 }
 

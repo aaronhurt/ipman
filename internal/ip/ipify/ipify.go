@@ -29,6 +29,5 @@ func (c *Config) Get(proto ip.IFlag) (string, error) {
 		return "", errors.ErrUnexpectedResponse
 	}
 
-	// return the ip payload
 	return strings.ToLower(res.IP), nil
 }

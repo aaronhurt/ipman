@@ -2,7 +2,6 @@
 package main
 
 import (
-	"fmt"
 	"log/slog"
 	"os"
 	"strings"
@@ -47,9 +46,8 @@ func main() {
 
 	// run command and check return
 	if status, err = c.Run(); err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, "Error executing CLI: %s\n", err)
+		log.Error("error executing CLI", "err", err)
 	}
 
-	// exit
 	os.Exit(status)
 }

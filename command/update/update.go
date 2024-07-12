@@ -25,7 +25,6 @@ func (c *Command) updateIP() error {
 		}
 	}
 
-	// okay
 	return nil
 }
 
@@ -38,23 +37,25 @@ func (c *Command) checkUpdate(iType ip.IFlag, rType dns.RType) error {
 	if local, err = c.ip.Get(iType); err != nil {
 		return err
 	}
+	c.Log.Info("local address", "iType", iType, "local", local)
 
 	// get remote address
 	if remote, err = c.dns.Get(c.config.zone, c.config.name, rType); err != nil {
 		return err
 	}
+	c.Log.Info("remote address", "iType", iType, "remote", remote)
 
-	c.Log.Debug("successfully queried local and remote addresses", "iType", iType, "local", local, "remote", remote)
-
-	// update if needed
-	if local != remote {
-		// attempt to update remote record
-		if record, err = c.dns.Upsert(c.config.zone, c.config.name, local, rType); err != nil {
-			return err
-		}
-		c.Log.Info("updated remote", "record", record, "rType", rType, "data", local)
+	// only update if needed
+	if local == remote {
+		c.Log.Debug("skipping update - no change detected")
+		return nil
 	}
 
-	// all okay
+	// attempt to update remote record
+	if record, err = c.dns.Upsert(c.config.zone, c.config.name, local, rType); err != nil {
+		return err
+	}
+	c.Log.Info("updated remote", "record", record, "rType", rType, "data", local)
+
 	return nil
 }
