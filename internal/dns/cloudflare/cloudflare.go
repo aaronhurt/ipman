@@ -21,7 +21,6 @@ func (c *Config) Get(zone, name string, typ dns.RType) (string, error) {
 			SetPathParam("zone", zone).
 			SetResult(&ZoneResponse{}).
 			SetError(&DNSErrorResponse{}).
-			SetDebug(true).
 			Get("/zones/{zone}"); err != nil {
 			return "", err
 		}
@@ -45,7 +44,6 @@ func (c *Config) Get(zone, name string, typ dns.RType) (string, error) {
 		SetPathParam("zone", zone).
 		SetResult(&DNSResponse{}).
 		SetError(&DNSErrorResponse{}).
-		SetDebug(true).
 		Get("/zones/{zone}/dns_records"); err != nil {
 		return "", err
 	}

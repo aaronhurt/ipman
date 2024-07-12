@@ -2,6 +2,7 @@
 package update
 
 import (
+	// backend definitions
 	"github.com/leprechau/ipman/internal/dns"
 	"github.com/leprechau/ipman/internal/ip"
 )
@@ -33,7 +34,6 @@ func (c *Command) checkUpdate(iType ip.IFlag, rType dns.RType) error {
 	var local, remote, record string
 	var err error
 
-	c.Log.Debug("checking update", "config", c.config)
 	// get local address
 	if local, err = c.ip.Get(iType); err != nil {
 		return err
@@ -47,14 +47,13 @@ func (c *Command) checkUpdate(iType ip.IFlag, rType dns.RType) error {
 	c.Log.Debug("successfully queried local and remote addresses", "iType", iType, "local", local, "remote", remote)
 
 	// update if needed
-	//	if local != remote {
-	// attempt to update remote record
-	if record, err = c.dns.Upsert(c.config.zone, c.config.name, local, rType); err != nil {
-		return err
+	if local != remote {
+		// attempt to update remote record
+		if record, err = c.dns.Upsert(c.config.zone, c.config.name, local, rType); err != nil {
+			return err
+		}
+		c.Log.Info("updated remote", "record", record, "rType", rType, "data", local)
 	}
-
-	c.Log.Info("updated remote", "record", record, "rType", rType, "data", local)
-	//	}
 
 	// all okay
 	return nil
