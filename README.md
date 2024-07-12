@@ -17,7 +17,7 @@ still function, but I am no longer able to test it and have moved my domain host
 
 ## Installing
 
-Users with a proper Go environment (1.20+ required) ...
+Users with a proper Go environment (1.21+ required) ...
 
 ```
 go get -u github.com/leprechau/ipman
