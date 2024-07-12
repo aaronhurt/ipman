@@ -12,6 +12,9 @@ export GO111MODULE = on
 build:
 	@build/build.sh
 
+install:
+	@build/build.sh -i
+
 test:
 	@go test -v ./...
 

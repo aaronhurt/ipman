@@ -1,16 +1,20 @@
 #!/usr/bin/env bash
 #
 ## package declarations
-BUILD_NAME="ipman"
+BUILD_NAME=$(basename "$(grep ^module go.mod|cut -f2 -d' ')")
 RELEASE_VERSION="0.1"
 RELEASE_BUILD=0
+
+## default to build
+GO_ACTION=build
 
 ## simple usage example
 showUsage() {
   printf "Usage: %s [-d|-c|-r]
   -d    Remove binary and vendor directory
   -c    Clean distribution files
-  -r    Build and package release binaries\n\n" "$0"
+  -r    Build and package release binaries
+  -i    Run 'go install' instead of 'go build'\n\n" "$0"
   exit 0
 }
 
@@ -29,7 +33,7 @@ export GO111MODULE=on
 should_exit=false
 
 ## read options
-while getopts ":dcr" opt; do
+while getopts ":dcri" opt; do
   case $opt in
     d)
       printf "Removing binary and vendor directory ... "
@@ -46,6 +50,9 @@ while getopts ":dcr" opt; do
     r)
       ensureGox
       RELEASE_BUILD=1
+      ;;
+    i)
+      GO_ACTION=install
       ;;
     *)
       showUsage
@@ -79,7 +86,7 @@ if [ $RELEASE_BUILD -eq 1 ]; then
 else
 
   ## build it
-  CGO_ENABLED=0 go build -o "${BUILD_NAME}" \
+  CGO_ENABLED=0 go ${GO_ACTION} \
     -ldflags="-X main.appVersion=${RELEASE_VERSION} -s -w" \
     > /dev/null >&1
 
@@ -108,7 +115,7 @@ if [ $RELEASE_BUILD -eq 1 ]; then
   printf "done.\nRelease files may be found in the ./dist/ directory.\n"
 else
   ## all done
-  printf "done.\nUsage: ./%s -h\n" "${BUILD_NAME}"
+  printf "done.\nUsage: %s -h\n" "${BUILD_NAME}"
 fi
 
 ## exit same as build
