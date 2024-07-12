@@ -1,4 +1,4 @@
-// Package common contains code shared between packages
+// Package internal contains code shared between packages
 package internal
 
 import (
