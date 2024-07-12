@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"os"
 
-	// common resources shared between commands
-	"github.com/leprechau/ipman/common"
+	"github.com/leprechau/ipman/internal"
+	"github.com/leprechau/ipman/internal/errors"
 )
 
 // setupFlags initializes the instance configuration
@@ -38,7 +38,7 @@ func (c *Command) setupFlags(args []string) error {
 
 	// check for remaining garbage
 	if cmdFlags.NArg() > 0 {
-		return common.ErrUnknownArg
+		return errors.ErrUnknownArg
 	}
 
 	// default to v4 if not specified
@@ -47,7 +47,7 @@ func (c *Command) setupFlags(args []string) error {
 	}
 
 	// init ip backend
-	if c.ip, err = common.GetIPBackend(c.config.ipbe); err != nil {
+	if c.ip, err = internal.GetIPBackend(c.config.ipbe); err != nil {
 		return err
 	}
 

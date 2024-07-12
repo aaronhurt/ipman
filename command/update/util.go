@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"os"
 
-	// common resources shared between commands
-	"github.com/leprechau/ipman/common"
+	"github.com/leprechau/ipman/internal"
+	"github.com/leprechau/ipman/internal/errors"
 )
 
 // setupFlags initializes the instance configuration
@@ -29,18 +29,18 @@ func (c *Command) setupFlags(args []string) error {
 	cmdFlags.BoolVar(&c.config.v6, "6", false,
 		"Update IPv6 (AAAA) record")
 	cmdFlags.StringVar(&c.config.key, "key", "",
-		"API access key")
+		"API access key (optional)")
 	cmdFlags.StringVar(&c.config.secret, "secret", "",
-		"API secret key")
-	cmdFlags.StringVar(&c.config.domain, "domain", "",
-		"Domain name")
+		"API secret key or token")
+	cmdFlags.StringVar(&c.config.zone, "zone", "",
+		"SetZone ID or domain name")
 	cmdFlags.StringVar(&c.config.name, "name", "@",
 		"Record name")
 	cmdFlags.IntVar(&c.config.ttl, "ttl", 600,
 		"TTL value")
 	cmdFlags.StringVar(&c.config.ipbe, "ipbe", "ipify",
 		"IP lookup backend")
-	cmdFlags.StringVar(&c.config.dnsbe, "dnsbe", "godaddy",
+	cmdFlags.StringVar(&c.config.dnsbe, "dnsbe", "cloudflare",
 		"DNS update backend")
 
 	// parse flags and ignore error
@@ -50,7 +50,14 @@ func (c *Command) setupFlags(args []string) error {
 
 	// check for remaining garbage
 	if cmdFlags.NArg() > 0 {
-		return common.ErrUnknownArg
+		return errors.ErrUnknownArg
+	}
+
+	// check zone and attempt to get from environment
+	if c.config.zone == "" {
+		if c.config.zone = os.Getenv("IPMAN_DNS_ZONE"); c.config.zone == "" {
+			return errors.ErrMissingZone
+		}
 	}
 
 	// default to v4 if not specified
@@ -69,38 +76,28 @@ func (c *Command) setupFlags(args []string) error {
 	}
 
 	// init ip backend
-	if c.ip, err = common.GetIPBackend(c.config.ipbe); err != nil {
+	if c.ip, err = internal.GetIPBackend(c.config.ipbe); err != nil {
 		return err
 	}
 
 	// init dns backend
-	if c.dns, err = common.GetDNSBackend(c.config.dnsbe); err != nil {
+	if c.dns, err = internal.GetDNSBackend(c.config.dnsbe); err != nil {
 		return err
 	}
 
 	// set backend access key if needed
 	if c.config.key != "" {
-		c.dns.AccessKey(c.config.key)
+		c.dns.SetAccessKey(c.config.key)
 	}
 
 	// set backend secret key if needed
 	if c.config.secret != "" {
-		c.dns.SecretKey(c.config.secret)
-	}
-
-	// check domain
-	if c.config.domain == "" {
-		c.config.domain = c.dns.DefaultDomainName()
-	}
-
-	// check name
-	if c.config.name == "" {
-		c.config.name = c.dns.DefaultRecordName()
+		c.dns.SetSecretKey(c.config.secret)
 	}
 
 	// check ttl
 	if c.config.ttl == 0 {
-		c.config.ttl = c.dns.DefaultRecordTTL()
+		c.config.ttl = c.dns.RecordTTL()
 	}
 
 	// always okay

@@ -21,20 +21,14 @@ type Backend interface {
 	Get(domain, name string, typ RType) (string, error)
 
 	// Upsert a record into a DNS backend
-	Upsert(domain, name, data string, typ RType) error
+	Upsert(domain, name, data string, typ RType) (string, error)
 
-	// DefaultDomainName returns the default domain name
-	DefaultDomainName() string
+	// RecordTTL returns the default record ttl
+	RecordTTL() int
 
-	// DefaultRecordName returns the default record name
-	DefaultRecordName() string
+	// SetAccessKey sets an API access key
+	SetAccessKey(string)
 
-	// DefaultRecordTTL returns the default record ttl
-	DefaultRecordTTL() int
-
-	// AccessKey provides a method to set an API access key
-	AccessKey(string)
-
-	// SecretKey provides a method to set an API secret key
-	SecretKey(string)
+	// SetSecretKey sets an API token or secret key
+	SetSecretKey(string)
 }

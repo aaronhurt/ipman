@@ -2,10 +2,9 @@ package check
 
 import (
 	"fmt"
-	stdLog "log"
+	"log/slog"
 
-	// backend definition
-	"github.com/leprechau/ipman/common/ip"
+	"github.com/leprechau/ipman/internal/ip"
 )
 
 // command configuration
@@ -18,7 +17,7 @@ type config struct {
 // Command is a Command implementation for the check operation
 type Command struct {
 	Self   string
-	Log    *stdLog.Logger
+	Log    *slog.Logger
 	config *config
 	ip     ip.Backend
 }
@@ -29,13 +28,13 @@ func (c *Command) Run(args []string) int {
 
 	// init flags
 	if err = c.setupFlags(args); err != nil {
-		c.Log.Printf("[Error] Failed to init flags: %s", err.Error())
+		c.Log.Error("failed to init flags", "err", err)
 		return 1
 	}
 
 	// check ip
 	if err = c.checkIP(); err != nil {
-		c.Log.Printf("[Error] Failed to check addresses: %s", err.Error())
+		c.Log.Error("failed to check addresses", "err", err)
 		return 1
 	}
 
@@ -59,6 +58,6 @@ Options:
 
 	-4        Get external IPv4 address if available.
 	-6        Get external IPv6 address if available.
-	-ipbe     IP lookup backend (local or ipify).        (default: ipify)
+	-ipbe     IP lookup backend (local or ipify).          (default: ipify)
 `, c.Self)
 }

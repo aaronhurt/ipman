@@ -2,11 +2,10 @@ package update
 
 import (
 	"fmt"
-	stdLog "log"
+	"log/slog"
 
-	// backend definitions
-	"github.com/leprechau/ipman/common/dns"
-	"github.com/leprechau/ipman/common/ip"
+	"github.com/leprechau/ipman/internal/dns"
+	"github.com/leprechau/ipman/internal/ip"
 )
 
 // command configuration
@@ -15,7 +14,7 @@ type config struct {
 	v6     bool
 	key    string
 	secret string
-	domain string
+	zone   string
 	name   string
 	ttl    int
 	ipbe   string
@@ -25,7 +24,7 @@ type config struct {
 // Command is a Command implementation for the update operation
 type Command struct {
 	Self   string
-	Log    *stdLog.Logger
+	Log    *slog.Logger
 	config *config
 	dns    dns.Backend
 	ip     ip.Backend
@@ -37,13 +36,13 @@ func (c *Command) Run(args []string) int {
 
 	// init flags
 	if err = c.setupFlags(args); err != nil {
-		c.Log.Printf("[Error] Failed to init flags: %s", err.Error())
+		c.Log.Error("failed to init flags", "err", err)
 		return 1
 	}
 
 	// attempt to update p
 	if err = c.updateIP(); err != nil {
-		c.Log.Printf("[Error] Failed to update dns record: %s", err.Error())
+		c.Log.Error("failed to update dns record", "err", err)
 		return 1
 	}
 
@@ -67,12 +66,12 @@ Options:
 
 	-4        Update external IPv4 address if available.
 	-6        Update external IPv6 address if available.
-	-key      The DNS API access key.
-	-secret   The DNS API access secret.
-	-domain   The DNS domain name.                   (default: local domain)
-	-name     The DNS record name.                   (default: @)
-	-ttl      The DNS record ttl in seconds.         (default: 600)
-	-ipbe     IP lookup backend (local or ipify).    (default: ipify)
-	-dnsbe    DNS update backend (godaddy or xxx)    (default: godaddy)
+	-key      The DNS API access key.                      (default: $IPMAN_DNS_KEY)
+	-secret   The DNS API token or access secret.          (default: $IPMAN_DNS_SECRET)
+	-zone     The DNS zone ID or domain name.              (default: $IPMAN_DNS_ZONE)
+	-name     The DNS record name.                         (default: @)
+	-ttl      The DNS record ttl in seconds.               (default: 600)
+	-ipbe     IP lookup backend (ipify|local).             (default: ipify)
+	-dnsbe    DNS update backend (cloudflare|godaddy)      (default: cloudflare)
 `, c.Self)
 }

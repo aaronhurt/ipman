@@ -4,8 +4,7 @@ package check
 import (
 	"fmt"
 
-	// backend definition
-	"github.com/leprechau/ipman/common/ip"
+	"github.com/leprechau/ipman/internal/ip"
 )
 
 // checkIP retrieves the local machine IP via the specified lookup backend

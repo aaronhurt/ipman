@@ -7,12 +7,17 @@
 
 IPman is a simple tool to automatically update DNS records (A and AAAA) based on the external local IPv4 and/or IPv6
 address of the local machine.  It uses ipify.com for the external address lookup and supports writing
-records to GoDaddy's DNS API.  Both backend providers are modeled as interfaces to allow adding additional backends as
-needed in the future.
+records to Cloudflare and GoDaddy's DNS API.  Both backend providers are modeled as interfaces to allow adding
+additional backends as needed in the future.
+
+Note: It appears GoDaddy has blocked API access for most customers. The GoDaddy API in this tool should
+still function, but I am no longer able to test it and have moved my domain hosting to Cloudflare.
+* https://www.reddit.com/r/selfhosted/comments/1cnipp3/warning_godaddy_silently_cut_access_to_their_dns/
+* https://www.reddit.com/r/godaddy/comments/1bl0f5r/am_i_the_only_one_who_cant_use_the_api/
 
 ## Installing
 
-Users with a proper Go environment (1.8+ required) ...
+Users with a proper Go environment (1.20+ required) ...
 
 ```
 go get -u github.com/leprechau/ipman
@@ -56,11 +61,11 @@ Available commands are:
 | `6`      | Get external IPv6 address if available.                                                         |
 | `key`    | The DNS API access key.  May also be set via the `IPMAN_DNS_KEY` environment variable.          |
 | `secret` | The DNS API access secret.  May also be set by via the `IPMAN_DNS_SECRET` environment variable. |
-| `domain` | The DNS domain name. This value defaults to the domain portion of the local hostname.           |
-| `name`   | The DNS record name. This defaults to the domain root alias ("@").                              |
+| `zone`   | The DNS zone ID or domain name. This is a required parameter.                                   |
+| `name`   | The DNS record name. This defaults to the dns zone apex ("@").                                  |
 | `ttl`    | The DNS record ttl in seconds.  This defaults to 600 seconds (5 minutes).                       |
 | `ipbe`   | IP lookup backend (`ipify` or `local`). This defaults to `ipify`.                               |
-| `dnsbe`  | DNS update backend (only `godaddy` currently). This defaults to `godaddy`.                      |
+| `dnsbe`  | DNS update backend (`cloudflare` or `godaddy`). This defaults to `cloudflare`.                  |
 
 ### Example
 

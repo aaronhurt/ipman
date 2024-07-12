@@ -4,8 +4,7 @@ package local
 import (
 	"net"
 
-	// backend definition
-	"github.com/leprechau/ipman/common/ip"
+	"github.com/leprechau/ipman/internal/ip"
 )
 
 // Get looks up client address

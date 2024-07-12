@@ -2,9 +2,8 @@
 package update
 
 import (
-	// backend definitions
-	"github.com/leprechau/ipman/common/dns"
-	"github.com/leprechau/ipman/common/ip"
+	"github.com/leprechau/ipman/internal/dns"
+	"github.com/leprechau/ipman/internal/ip"
 )
 
 // updateIP is a wrapper around the checkUpdate function
@@ -31,34 +30,31 @@ func (c *Command) updateIP() error {
 
 // checkUpdate checks the local machine IP and triggers a DNS update if needed
 func (c *Command) checkUpdate(iType ip.IFlag, rType dns.RType) error {
-	var local string
-	var remote string
+	var local, remote, record string
 	var err error
 
+	c.Log.Debug("checking update", "config", c.config)
 	// get local address
 	if local, err = c.ip.Get(iType); err != nil {
 		return err
 	}
 
 	// get remote address
-	if remote, err = c.dns.Get(c.config.domain, c.config.name, rType); err != nil {
+	if remote, err = c.dns.Get(c.config.zone, c.config.name, rType); err != nil {
 		return err
 	}
 
-	// debugging
-	c.Log.Printf("[%s] local/remote %s/%s", iType, local, remote)
+	c.Log.Debug("successfully queried local and remote addresses", "iType", iType, "local", local, "remote", remote)
 
 	// update if needed
-	if local != remote {
-		// attempt to update remote record
-		if err = c.dns.Upsert(c.config.domain, c.config.name, local, rType); err != nil {
-			return err
-		}
-
-		// debugging
-		c.Log.Printf("Updated remote %s record %s.%s -> %s",
-			rType, c.config.name, c.config.domain, local)
+	//	if local != remote {
+	// attempt to update remote record
+	if record, err = c.dns.Upsert(c.config.zone, c.config.name, local, rType); err != nil {
+		return err
 	}
+
+	c.Log.Info("updated remote", "record", record, "rType", rType, "data", local)
+	//	}
 
 	// all okay
 	return nil
