@@ -2,8 +2,10 @@
 package local
 
 import (
+	"fmt"
 	"net"
 
+	"github.com/leprechau/ipman/internal/errors"
 	"github.com/leprechau/ipman/internal/ip"
 )
 
@@ -22,6 +24,8 @@ func (c *Config) Get(proto ip.IFlag) (string, error) {
 		if conn, err = net.Dial("udp6", c.v6Host); err != nil {
 			return "", err
 		}
+	default:
+		return "", fmt.Errorf("%w: %s", errors.ErrUnknownIPProtocol, proto)
 	}
 
 	// close after return

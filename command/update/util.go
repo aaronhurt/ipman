@@ -1,12 +1,13 @@
 package update
 
 import (
+	stderrors "errors"
 	"flag"
 	"fmt"
 	"os"
 
 	"github.com/leprechau/ipman/internal"
-	"github.com/leprechau/ipman/internal/errors"
+	internalerrors "github.com/leprechau/ipman/internal/errors"
 )
 
 // setupFlags initializes the instance configuration
@@ -21,7 +22,8 @@ func (c *Command) setupFlags(args []string) error {
 
 	// init flagset
 	cmdFlags = flag.NewFlagSet("update", flag.ContinueOnError)
-	cmdFlags.Usage = func() { _, _ = fmt.Fprint(os.Stdout, c.Help()); os.Exit(0) }
+	cmdFlags.SetOutput(os.Stdout)
+	cmdFlags.Usage = func() { _, _ = os.Stdout.WriteString(c.Help()) }
 
 	// declare flags
 	cmdFlags.BoolVar(&c.config.v4, "4", false,
@@ -45,18 +47,21 @@ func (c *Command) setupFlags(args []string) error {
 
 	// parse flags and ignore error
 	if err = cmdFlags.Parse(args); err != nil {
-		return nil
+		if stderrors.Is(err, flag.ErrHelp) {
+			return nil
+		}
+		return fmt.Errorf("parse update flags: %w", err)
 	}
 
 	// check for remaining garbage
 	if cmdFlags.NArg() > 0 {
-		return errors.ErrUnknownArg
+		return internalerrors.ErrUnknownArg
 	}
 
 	// check zone and attempt to get from environment
 	if c.config.zone == "" {
 		if c.config.zone = os.Getenv("IPMAN_DNS_ZONE"); c.config.zone == "" {
-			return errors.ErrMissingZone
+			return internalerrors.ErrMissingZone
 		}
 	}
 
@@ -77,12 +82,12 @@ func (c *Command) setupFlags(args []string) error {
 
 	// init ip backend
 	if c.ip, err = internal.GetIPBackend(c.config.ipbe); err != nil {
-		return err
+		return fmt.Errorf("init ip backend: %w", err)
 	}
 
 	// init dns backend
 	if c.dns, err = internal.GetDNSBackend(c.config.dnsbe); err != nil {
-		return err
+		return fmt.Errorf("init dns backend: %w", err)
 	}
 
 	// set backend access key if needed

@@ -1,12 +1,13 @@
 package check
 
 import (
+	stderrors "errors"
 	"flag"
 	"fmt"
 	"os"
 
 	"github.com/leprechau/ipman/internal"
-	"github.com/leprechau/ipman/internal/errors"
+	internalerrors "github.com/leprechau/ipman/internal/errors"
 )
 
 // setupFlags initializes the instance configuration
@@ -21,7 +22,8 @@ func (c *Command) setupFlags(args []string) error {
 
 	// init flagset
 	cmdFlags = flag.NewFlagSet("check", flag.ContinueOnError)
-	cmdFlags.Usage = func() { _, _ = fmt.Fprint(os.Stdout, c.Help()); os.Exit(0) }
+	cmdFlags.SetOutput(os.Stdout)
+	cmdFlags.Usage = func() { _, _ = os.Stdout.WriteString(c.Help()) }
 
 	// declare flags
 	cmdFlags.BoolVar(&c.config.v4, "4", false,
@@ -33,12 +35,15 @@ func (c *Command) setupFlags(args []string) error {
 
 	// parse flags and ignore error
 	if err = cmdFlags.Parse(args); err != nil {
-		return nil
+		if stderrors.Is(err, flag.ErrHelp) {
+			return nil
+		}
+		return fmt.Errorf("parse check flags: %w", err)
 	}
 
 	// check for remaining garbage
 	if cmdFlags.NArg() > 0 {
-		return errors.ErrUnknownArg
+		return internalerrors.ErrUnknownArg
 	}
 
 	// default to v4 if not specified
@@ -48,7 +53,7 @@ func (c *Command) setupFlags(args []string) error {
 
 	// init ip backend
 	if c.ip, err = internal.GetIPBackend(c.config.ipbe); err != nil {
-		return err
+		return fmt.Errorf("init ip backend: %w", err)
 	}
 
 	return nil

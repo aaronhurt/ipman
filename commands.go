@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log/slog"
 	"os"
 
 	"github.com/leprechau/ipman/command/check"
@@ -9,19 +10,19 @@ import (
 )
 
 // init command factory
-func initCommands() map[string]cli.CommandFactory {
+func initCommands(logger *slog.Logger) map[string]cli.CommandFactory {
 	// register sub commands
 	return map[string]cli.CommandFactory{
 		"check": func() (cli.Command, error) {
 			return &check.Command{
 				Self: os.Args[0],
-				Log:  log,
+				Log:  logger,
 			}, nil
 		},
 		"update": func() (cli.Command, error) {
 			return &update.Command{
 				Self: os.Args[0],
-				Log:  log,
+				Log:  logger,
 			}, nil
 		},
 	}

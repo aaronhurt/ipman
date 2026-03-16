@@ -14,6 +14,8 @@ func (c *Config) Get(zone, name string, typ dns.RType) (string, error) {
 	var err error
 	var r *resty.Response
 
+	c.recordID = ""
+
 	// cloudflare punycode mapping seems broken - lookup the zone apex instead
 	if name == "@" {
 		if r, err = c.client.R().
@@ -67,10 +69,9 @@ func (c *Config) Get(zone, name string, typ dns.RType) (string, error) {
 
 // Upsert a record by name
 func (c *Config) Upsert(zone, name, data string, typ dns.RType) (string, error) {
-	r, err := c.client.R().
+	req := c.client.R().
 		SetAuthToken(c.apiToken).
 		SetPathParam("zone", zone).
-		SetPathParam("record", c.recordID).
 		SetBody(&DNSRecord{
 			Content: data,
 			Name:    name,
@@ -79,8 +80,20 @@ func (c *Config) Upsert(zone, name, data string, typ dns.RType) (string, error) 
 			TTL:     c.recordTTL,
 		}).
 		SetResult(&DNSUpdateResponse{}).
-		SetError(&DNSErrorResponse{}).
-		Patch("/zones/{zone}/dns_records/{record}")
+		SetError(&DNSErrorResponse{})
+
+	var (
+		r   *resty.Response
+		err error
+	)
+
+	if c.recordID == "" {
+		r, err = req.Post("/zones/{zone}/dns_records")
+	} else {
+		r, err = req.
+			SetPathParam("record", c.recordID).
+			Patch("/zones/{zone}/dns_records/{record}")
+	}
 
 	if err != nil {
 		return "", err
