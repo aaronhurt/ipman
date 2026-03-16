@@ -6,9 +6,6 @@ import (
 	"log/slog"
 	"os"
 	"strings"
-
-	"github.com/leprechau/ipman/command/check"
-	"github.com/leprechau/ipman/command/update"
 )
 
 // setupLogger configures the application logger.
@@ -41,6 +38,10 @@ Commands:
 `, self)
 }
 
+func usageError(self, message string) string {
+	return fmt.Sprintf("%s: %s\n\n%s", self, message, usage(self))
+}
+
 // main is a thin wrapper around the real application entry point.
 func main() {
 	os.Exit(realMain())
@@ -49,31 +50,33 @@ func main() {
 // realMain executes the application and returns a process exit code.
 func realMain() int {
 	logger := setupLogger()
+	commands := initCommands(logger)
 
 	if len(os.Args) < 2 {
 		_, _ = os.Stderr.WriteString(usage(os.Args[0]))
 		return 1
 	}
 
-	switch os.Args[1] {
-	case "check":
-		cmd := &check.Command{
-			Self: os.Args[0],
-			Log:  logger,
-		}
-		return cmd.Run(os.Args[2:])
-	case "update":
-		cmd := &update.Command{
-			Self: os.Args[0],
-			Log:  logger,
-		}
-		return cmd.Run(os.Args[2:])
+	switch arg := os.Args[1]; arg {
 	case "help", "-h", "--help":
 		_, _ = os.Stdout.WriteString(usage(os.Args[0]))
 		return 0
 	default:
-		logger.Error("unknown command", "command", os.Args[1])
-		_, _ = os.Stderr.WriteString(usage(os.Args[0]))
+		if strings.HasPrefix(arg, "-") {
+			message := fmt.Sprintf("unknown top-level flag %q", arg)
+			if arg == "-" || arg == "--" {
+				message = fmt.Sprintf("expected a subcommand before %q", arg)
+			}
+
+			_, _ = os.Stderr.WriteString(usageError(os.Args[0], message))
+			return 1
+		}
+
+		if cmd, ok := commands[arg]; ok {
+			return runCommand(os.Args[2:], cmd)
+		}
+
+		_, _ = os.Stderr.WriteString(usageError(os.Args[0], fmt.Sprintf("unknown command %q", arg)))
 		return 1
 	}
 }
