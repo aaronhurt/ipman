@@ -4,8 +4,7 @@
 golangci="$(go env GOPATH)/bin/golangci-lint"
 if ! ${golangci} version &> /dev/null; then
   echo "Installing golangci-lint binary to ${golangci}"
-  curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | \
-  sh -s -- -b "$(go env GOPATH)/bin" v1.57.1
+  curl -sSfL https://golangci-lint.run/install.sh | sh -s -- -b $(go env GOPATH)/bin
   echo "done"
 fi
 

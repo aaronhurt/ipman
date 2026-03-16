@@ -18,14 +18,6 @@ showUsage() {
   exit 0
 }
 
-## install gox if needed
-ensureGox() {
-  if ! which gox &> /dev/null; then
-    printf "Installing gox ... "
-    go install github.com/mitchellh/gox@v1
-  fi
-}
-
 ## we require module support
 export GO111MODULE=on
 
@@ -48,7 +40,6 @@ while getopts ":dcri" opt; do
       should_exit=true
       ;;
     r)
-      ensureGox
       RELEASE_BUILD=1
       ;;
     i)
@@ -73,15 +64,34 @@ if [ $RELEASE_BUILD -eq 1 ]; then
   ## clean dist directory
   rm -rf ./dist/
 
-  ## call gox to build our binaries
-  CGO_ENABLED=0 gox \
-    -osarch="linux/amd64 darwin/amd64 freebsd/amd64 openbsd/amd64 windows/amd64 windows/386" \
-    -ldflags="-X main.appVersion=${RELEASE_VERSION} -s -w" \
-    -output="./dist/${BUILD_NAME}-${RELEASE_VERSION}-{{.Arch}}-{{.OS}}/${BUILD_NAME}-${RELEASE_VERSION}" \
-    > /dev/null >&1
+  ## build release binaries with a shell loop instead of gox
+  RETURN_VALUE=0
 
-  ## gox return
-  RETURN_VALUE=$?
+  for target in \
+    linux/amd64 \
+    darwin/amd64 \
+    freebsd/amd64 \
+    openbsd/amd64 \
+    windows/amd64 \
+    windows/386
+  do
+    GOOS="${target%/*}"
+    GOARCH="${target#*/}"
+    OUTPUT_DIR="./dist/${BUILD_NAME}-${RELEASE_VERSION}-${GOARCH}-${GOOS}"
+
+    mkdir -p "${OUTPUT_DIR}"
+
+    CGO_ENABLED=0 GOOS="${GOOS}" GOARCH="${GOARCH}" \
+      go build \
+      -ldflags="-X main.appVersion=${RELEASE_VERSION} -s -w" \
+      -o "${OUTPUT_DIR}/${BUILD_NAME}-${RELEASE_VERSION}" \
+      > /dev/null 2>&1
+
+    RETURN_VALUE=$?
+    if [ ${RETURN_VALUE} -ne 0 ]; then
+      break
+    fi
+  done
 
 else
 
