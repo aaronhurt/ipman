@@ -10,14 +10,11 @@ import (
 	"github.com/mitchellh/cli"
 )
 
-// log is a package global logger
-var log *slog.Logger
-
-// setupLogger configures the package global logger
-func setupLogger() {
+// setupLogger configures the application logger.
+func setupLogger() *slog.Logger {
 	lvl := &slog.LevelVar{} // create new level logger
 	lvl.Set(slog.LevelInfo) // default to Info
-	log = slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: lvl}))
+	logger := slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: lvl}))
 	if l := os.Getenv("LOG"); l != "" {
 		switch {
 		case strings.HasPrefix(l, "D"):
@@ -28,6 +25,8 @@ func setupLogger() {
 			lvl.Set(slog.LevelError)
 		}
 	}
+
+	return logger
 }
 
 // it all starts here
@@ -35,18 +34,16 @@ func main() {
 	var c *cli.CLI // cli object
 	var status int // exit status
 	var err error  // general error holder
-
-	// setup logger
-	setupLogger()
+	logger := setupLogger()
 
 	// init and populate cli object
 	c = cli.NewCLI(appName, appVersion)
-	c.Args = os.Args[1:]        // arguments minus command
-	c.Commands = initCommands() // see commands.go
+	c.Args = os.Args[1:]              // arguments minus command
+	c.Commands = initCommands(logger) // see commands.go
 
 	// run command and check return
 	if status, err = c.Run(); err != nil {
-		log.Error("error executing CLI", "err", err)
+		logger.Error("error executing CLI", "err", err)
 	}
 
 	os.Exit(status)

@@ -14,6 +14,9 @@ var ErrUnknownIPBackend = errors.New("unknown IP backend specified for command")
 // ErrUnknownDNSBackend is returned when an unknown DNS backend is specified on the cli
 var ErrUnknownDNSBackend = errors.New("unknown DNS backend specified for command")
 
+// ErrUnknownIPProtocol is returned when an unsupported IP protocol is requested.
+var ErrUnknownIPProtocol = errors.New("unknown IP protocol")
+
 // ErrMissingZone is returned when no zone ID or domain name is specified on the cli
 var ErrMissingZone = errors.New("missing zone or domain name")
 
