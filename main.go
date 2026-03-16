@@ -2,12 +2,13 @@
 package main
 
 import (
+	"fmt"
 	"log/slog"
 	"os"
 	"strings"
 
-	// CLI library
-	"github.com/mitchellh/cli"
+	"github.com/leprechau/ipman/command/check"
+	"github.com/leprechau/ipman/command/update"
 )
 
 // setupLogger configures the application logger.
@@ -29,22 +30,50 @@ func setupLogger() *slog.Logger {
 	return logger
 }
 
-// it all starts here
+// usage generates the command-line usage message.
+func usage(self string) string {
+	return fmt.Sprintf(`Usage: %s <command> [options]
+
+Commands:
+  check    Return current external IP address of local machine.
+  update   Update DNS registry with external IP address of local machine.
+  help     Show this help message.
+`, self)
+}
+
+// main is a thin wrapper around the real application entry point.
 func main() {
-	var c *cli.CLI // cli object
-	var status int // exit status
-	var err error  // general error holder
+	os.Exit(realMain())
+}
+
+// realMain executes the application and returns a process exit code.
+func realMain() int {
 	logger := setupLogger()
 
-	// init and populate cli object
-	c = cli.NewCLI(appName, appVersion)
-	c.Args = os.Args[1:]              // arguments minus command
-	c.Commands = initCommands(logger) // see commands.go
-
-	// run command and check return
-	if status, err = c.Run(); err != nil {
-		logger.Error("error executing CLI", "err", err)
+	if len(os.Args) < 2 {
+		_, _ = os.Stderr.WriteString(usage(os.Args[0]))
+		return 1
 	}
 
-	os.Exit(status)
+	switch os.Args[1] {
+	case "check":
+		cmd := &check.Command{
+			Self: os.Args[0],
+			Log:  logger,
+		}
+		return cmd.Run(os.Args[2:])
+	case "update":
+		cmd := &update.Command{
+			Self: os.Args[0],
+			Log:  logger,
+		}
+		return cmd.Run(os.Args[2:])
+	case "help", "-h", "--help":
+		_, _ = os.Stdout.WriteString(usage(os.Args[0]))
+		return 0
+	default:
+		logger.Error("unknown command", "command", os.Args[1])
+		_, _ = os.Stderr.WriteString(usage(os.Args[0]))
+		return 1
+	}
 }
