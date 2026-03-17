@@ -11,7 +11,7 @@ import (
 )
 
 // setupFlags initializes the instance configuration
-func (c *Command) setupFlags(args []string) error {
+func (c *Command) setupFlags(args []string) (bool, error) {
 	var cmdFlags *flag.FlagSet // instance flagset
 	var err error
 
@@ -45,23 +45,23 @@ func (c *Command) setupFlags(args []string) error {
 	cmdFlags.StringVar(&c.config.dnsbe, "dnsbe", "cloudflare",
 		"DNS update backend")
 
-	// parse flags and ignore error
+	// parse flags and catch help
 	if err = cmdFlags.Parse(args); err != nil {
 		if stderrors.Is(err, flag.ErrHelp) {
-			return nil
+			return true, nil
 		}
-		return fmt.Errorf("parse update flags: %w", err)
+		return false, fmt.Errorf("parse update flags: %w", err)
 	}
 
 	// check for remaining garbage
 	if cmdFlags.NArg() > 0 {
-		return internalerrors.ErrUnknownArg
+		return false, internalerrors.ErrUnknownArg
 	}
 
 	// check zone and attempt to get from environment
 	if c.config.zone == "" {
 		if c.config.zone = os.Getenv("IPMAN_DNS_ZONE"); c.config.zone == "" {
-			return internalerrors.ErrMissingZone
+			return false, internalerrors.ErrMissingZone
 		}
 	}
 
@@ -82,12 +82,12 @@ func (c *Command) setupFlags(args []string) error {
 
 	// init ip backend
 	if c.ip, err = internal.GetIPBackend(c.config.ipbe); err != nil {
-		return fmt.Errorf("init ip backend: %w", err)
+		return false, fmt.Errorf("init ip backend: %w", err)
 	}
 
 	// init dns backend
 	if c.dns, err = internal.GetDNSBackend(c.config.dnsbe); err != nil {
-		return fmt.Errorf("init dns backend: %w", err)
+		return false, fmt.Errorf("init dns backend: %w", err)
 	}
 
 	// set backend access key if needed
@@ -105,5 +105,5 @@ func (c *Command) setupFlags(args []string) error {
 		c.config.ttl = c.dns.RecordTTL()
 	}
 
-	return nil
+	return false, nil
 }

@@ -11,7 +11,7 @@ import (
 )
 
 // setupFlags initializes the instance configuration
-func (c *Command) setupFlags(args []string) error {
+func (c *Command) setupFlags(args []string) (bool, error) {
 	var cmdFlags *flag.FlagSet // instance flagset
 	var err error
 
@@ -33,17 +33,17 @@ func (c *Command) setupFlags(args []string) error {
 	cmdFlags.StringVar(&c.config.ipbe, "ipbe", "ipify",
 		"IP lookup backend")
 
-	// parse flags and ignore error
+	// parse flags and catch help
 	if err = cmdFlags.Parse(args); err != nil {
 		if stderrors.Is(err, flag.ErrHelp) {
-			return nil
+			return true, nil
 		}
-		return fmt.Errorf("parse check flags: %w", err)
+		return false, fmt.Errorf("parse check flags: %w", err)
 	}
 
 	// check for remaining garbage
 	if cmdFlags.NArg() > 0 {
-		return internalerrors.ErrUnknownArg
+		return false, internalerrors.ErrUnknownArg
 	}
 
 	// default to v4 if not specified
@@ -53,8 +53,8 @@ func (c *Command) setupFlags(args []string) error {
 
 	// init ip backend
 	if c.ip, err = internal.GetIPBackend(c.config.ipbe); err != nil {
-		return fmt.Errorf("init ip backend: %w", err)
+		return false, fmt.Errorf("init ip backend: %w", err)
 	}
 
-	return nil
+	return false, nil
 }

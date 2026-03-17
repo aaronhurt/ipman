@@ -1,9 +1,13 @@
 package ipify
 
 import (
+	"time"
+
 	"github.com/go-resty/resty/v2"
 	"github.com/leprechau/ipman/internal/ip"
 )
+
+const requestTimeout = 30 * time.Second
 
 // Config contains backend configuration
 type Config struct {
@@ -20,6 +24,7 @@ func DefaultConfig() *Config {
 		v4URL: "https://api.ipify.org",
 		v6URL: "https://api6.ipify.org",
 		client: resty.New().
-			SetHeader("Accept", "application/json"),
+			SetHeader("Accept", "application/json").
+			SetTimeout(requestTimeout),
 	}
 }

@@ -4,9 +4,13 @@ run:
 
 linters:
   enable:
+    - errcheck
     - gocyclo
     - misspell
     - revive
+    - govet
+    - gosec
+    - staticcheck
 formatters:
   enable:
     - gofmt

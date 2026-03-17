@@ -12,8 +12,12 @@ func TestSetupFlagsLoadsZoneFromEnv(t *testing.T) {
 
 	cmd := &Command{Self: "ipman"}
 
-	if err := cmd.setupFlags(nil); err != nil {
+	showHelp, err := cmd.setupFlags(nil)
+	if err != nil {
 		t.Fatalf("setupFlags() error = %v", err)
+	}
+	if showHelp {
+		t.Fatal("setupFlags() unexpectedly requested help")
 	}
 
 	if got := cmd.config.zone; got != "example.com" {
@@ -34,9 +38,12 @@ func TestSetupFlagsReturnsParseError(t *testing.T) {
 
 	cmd := &Command{Self: "ipman"}
 
-	err := cmd.setupFlags([]string{"-ttl=bad"})
+	showHelp, err := cmd.setupFlags([]string{"-ttl=bad"})
 	if err == nil {
 		t.Fatal("setupFlags() error = nil, want parse failure")
+	}
+	if showHelp {
+		t.Fatal("setupFlags() unexpectedly requested help")
 	}
 
 	if !strings.Contains(err.Error(), "parse update flags") {
@@ -49,9 +56,12 @@ func TestSetupFlagsRequiresZoneWhenUnset(t *testing.T) {
 
 	cmd := &Command{Self: "ipman"}
 
-	err := cmd.setupFlags(nil)
+	showHelp, err := cmd.setupFlags(nil)
 	if err == nil {
 		t.Fatal("setupFlags() error = nil, want missing zone failure")
+	}
+	if showHelp {
+		t.Fatal("setupFlags() unexpectedly requested help")
 	}
 
 	if err != internalerrors.ErrMissingZone {
