@@ -12,8 +12,12 @@ func TestSetupFlagsDefaultsToIPv4(t *testing.T) {
 
 	cmd := &Command{Self: "ipman"}
 
-	if err := cmd.setupFlags(nil); err != nil {
+	showHelp, err := cmd.setupFlags(nil)
+	if err != nil {
 		t.Fatalf("setupFlags() error = %v", err)
+	}
+	if showHelp {
+		t.Fatal("setupFlags() unexpectedly requested help")
 	}
 
 	if !cmd.config.v4 {
@@ -34,9 +38,12 @@ func TestSetupFlagsReturnsParseError(t *testing.T) {
 
 	cmd := &Command{Self: "ipman"}
 
-	err := cmd.setupFlags([]string{"-unknown"})
+	showHelp, err := cmd.setupFlags([]string{"-unknown"})
 	if err == nil {
 		t.Fatal("setupFlags() error = nil, want parse failure")
+	}
+	if showHelp {
+		t.Fatal("setupFlags() unexpectedly requested help")
 	}
 
 	if !strings.Contains(err.Error(), "parse check flags") {
@@ -49,9 +56,12 @@ func TestSetupFlagsRejectsTrailingArgs(t *testing.T) {
 
 	cmd := &Command{Self: "ipman"}
 
-	err := cmd.setupFlags([]string{"extra"})
+	showHelp, err := cmd.setupFlags([]string{"extra"})
 	if err == nil {
 		t.Fatal("setupFlags() error = nil, want trailing arg failure")
+	}
+	if showHelp {
+		t.Fatal("setupFlags() unexpectedly requested help")
 	}
 
 	if err != internalerrors.ErrUnknownArg {

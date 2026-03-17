@@ -1,9 +1,13 @@
 package cloudflare
 
 import (
+	"time"
+
 	"github.com/go-resty/resty/v2"
 	"github.com/leprechau/ipman/internal/dns"
 )
+
+const requestTimeout = 30 * time.Second
 
 // Config contains backend configuration
 type Config struct {
@@ -21,7 +25,8 @@ func DefaultConfig() *Config {
 		recordTTL: 600,
 		client: resty.New().
 			SetHeader("Accept", "application/json").
-			SetBaseURL("https://api.cloudflare.com/client/v4"),
+			SetBaseURL("https://api.cloudflare.com/client/v4").
+			SetTimeout(requestTimeout),
 	}
 }
 

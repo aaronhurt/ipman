@@ -32,12 +32,16 @@ type Command struct {
 
 // Run is a function to run the command
 func (c *Command) Run(args []string) int {
+	var showHelp bool
 	var err error
 
 	// init flags
-	if err = c.setupFlags(args); err != nil {
+	if showHelp, err = c.setupFlags(args); err != nil {
 		c.Log.Error("failed to init flags", "err", err)
 		return 1
+	}
+	if showHelp {
+		return 0
 	}
 
 	// attempt to update p
